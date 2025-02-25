@@ -2,7 +2,7 @@ import socket
 import threading
 
 # Diccionario para almacenar clientes por sala
-salas = {}
+salas = {f"Sala {i}": [] for i in range(1, 100)}  # Crear 99 salas
 
 # Función para enviar la lista de salas a todos los clientes
 def enviar_salas_a_todos():
@@ -34,8 +34,7 @@ def manejar_cliente(cliente_socket, direccion):
                 # Verificar si el cliente sigue en la sala antes de eliminarlo
                 if (cliente_socket, nombre) in salas[sala_actual]:
                     salas[sala_actual].remove((cliente_socket, nombre))
-                if not salas[sala_actual]:  # Si la sala queda vacía, eliminarla
-                    del salas[sala_actual]
+                # No eliminamos la sala, incluso si queda vacía
 
             if nueva_sala not in salas:
                 salas[nueva_sala] = []
@@ -76,8 +75,7 @@ def manejar_cliente(cliente_socket, direccion):
             if sala_actual in salas:
                 if (cliente_socket, nombre) in salas[sala_actual]:
                     salas[sala_actual].remove((cliente_socket, nombre))
-                if not salas[sala_actual]:  # Si la sala queda vacía, eliminarla
-                    del salas[sala_actual]
+                # No eliminamos la sala, incluso si queda vacía
             enviar_salas_a_todos()  # Enviar la lista actualizada de salas a todos
         cliente_socket.close()
 
