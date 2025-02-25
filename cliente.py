@@ -17,7 +17,7 @@ def iniciar_chat(nombre_usuario):
     try:
         # Configuración del cliente
         cliente_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        cliente_socket.connect(("192.168.106.96", 12345))  # IP del servidor
+        cliente_socket.connect(("192.168.106.64", 12345))  # IP del servidor
 
         # Enviar el nombre al servidor
         cliente_socket.send(nombre_usuario.encode())
@@ -33,6 +33,16 @@ def iniciar_chat(nombre_usuario):
         # Panel lateral para mostrar las salas activas
         panel_salas = Listbox(ventana_chat, width=20, height=20)
         panel_salas.grid(row=0, column=2, padx=10, pady=10, sticky="ns")
+
+        # Función para cambiar de sala cuando el usuario selecciona una sala en el Listbox
+        def cambiar_sala(event):
+            seleccion = panel_salas.curselection()
+            if seleccion:
+                sala_seleccionada = panel_salas.get(seleccion[0])
+                cliente_socket.send(f"/cambiar {sala_seleccionada}".encode())
+
+        # Vincular el evento de selección en el Listbox
+        panel_salas.bind('<<ListboxSelect>>', cambiar_sala)
 
         # Campo de entrada de texto
         entrada_mensaje = tk.Entry(ventana_chat, width=40)
