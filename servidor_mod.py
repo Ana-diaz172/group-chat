@@ -43,6 +43,11 @@ def manejar_cliente(cliente_socket, direccion):
             if not mensaje:
                 break
 
+            if mensaje.lower().startswith("/cambiar "):  # Comando para cambiar de sala
+                nueva_sala = mensaje.split(" ", 1)[1]
+                cambiar_sala(nueva_sala)
+                continue  # Evitar enviar el mensaje de comando a la sala
+            
             if mensaje.lower() == "/users":
                 usuarios_sala = [user for _, user in salas.get(sala_actual, [])]
                 cliente_socket.send(f"Usuarios en {sala_actual}: {', '.join(usuarios_sala)}\n".encode())
